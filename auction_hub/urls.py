@@ -14,8 +14,33 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+import auction.views
+import profiles.views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", auction.views.home, name="home"),
+
+    # Accounts
+    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+
+    # Category
+    path('category/<str:pk>/', auction.views.category, name="category"),
+    path('categories/', auction.views.categories, name='categories'),
+    # Auction
+    path('auction/<str:pk>/', auction.views.auction, name='auction'),
+    path('auctions/', auction.views.auctions, name='auctions'),
+    # Profile
+    path('createprofile/', profiles.views.create_profile, name='create_profile'),
+    path('user/<pk>', profiles.views.user_profile, name='profile'),
+    path('edituser/', profiles.views.edit_profile, name='edit_profile'),
+    path('users/', profiles.views.profiles_list, name='profiles'),
+    # Rating
+    #path('ratings/', auction.views.ratings, name='ratings'),
+    # Favorites
+    #path('favorites/', auction.views.favorites, name='favorites'),
 ]

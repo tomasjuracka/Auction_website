@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block title %}Auction - home{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <div class="user_hello">Hello </div>
+    {% endif %}
+    <div class="welcome">Welcome on auction website.</div>
+{% endblock %}

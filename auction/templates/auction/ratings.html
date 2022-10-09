@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block title %}Ongoing auctions{% endblock %}
+
+{% block content %}
+    <div class="list-of-ratings">List of all rated auctions:</div>
+    <div class="ratings-list">
+        <ul>
+            {% for auction in auctions %}
+            <li>
+                <a href="{% url 'auction' auction.id %}">{{ auction.name }}</a>
+
+
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

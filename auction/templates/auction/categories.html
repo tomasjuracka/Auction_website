@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block title %}Auction categories{% endblock %}
+
+{% block content %}
+    <div class="list-of-categories">List of categories:</div>
+    <div class="categories-list">
+        <ul>
+            {% for category in categories %}
+            <li>
+                <a href="{% url 'category' category.id %}">{{ category.name }}</a>
+
+
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

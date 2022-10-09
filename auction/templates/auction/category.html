@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block title %}Auction category{{ room.name }}{% endblock %}
+
+{% block content %}
+    <div class="room-descr">
+        You are in category: <b>{{ category.name }}</b> <br>
+        Description: {{ category.description }}
+    </div>
+
+    <div class="item-grid">
+        <ul>
+        {% for auction in auctions %}
+            <li>
+                {{ auction }}
+            </li>
+        {% endfor %}
+
+        </ul>
+    </div>
+{% endblock %}

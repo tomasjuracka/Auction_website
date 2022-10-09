@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block title %}User: {{ profile.user.username }}{% endblock %}
+
+{% block content %}
+
+<div class="user-profile"> Profile: {{ profile.user.username }}</div>
+<div class="first-name"> Name: {{ profile.user.first_name }}</div>
+<div class="last-name"> Last Name: {{ profile.user.last_name }}</div>
+<div class="email"> Email: {{ profile.user.email }}</div>
+<div class="city"> City: {{ profile.user.city }}</div>
+<div class="address"> Address: {{ profile.user.address }}</div>
+<div class="photo"> Photo: {{ profile.photo }}
+    <div class="my-profile-file">
+        <a href="{{ profile.photo }}"><img src="{{ profile.photo }}" width="50px"></a>
+    </div>
+</div>
+
+{% if profile.user.id == request.user.id %}
+    <a href="{% url 'edit_profile' %}">EDIT PROFILE</a>
+{% endif %}
+
+{% endblock %}

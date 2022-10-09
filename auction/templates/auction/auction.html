@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block title %}Category: {{ auction.name }}{% endblock %}
+
+{% block content %}
+    <div class="room-descr">
+        You are in category: <b>{{ auction.name }}</b> <br>
+        Description: {{ auction.description }}
+    </div>
+
+    <div class="category-form">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="body">Message: </label>
+            <textarea name="body" id="body" rows="1" cols="100"> </textarea>
+            <input type="file" name="upload" accept="*">  <!-- accept=".doc, .pdf, .txt" -->
+            <input type="submit" value="Send">
+        </form>
+    </div>
+{% endblock %}
