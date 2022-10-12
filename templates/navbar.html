@@ -6,7 +6,7 @@
         <li><a href="{% url 'categories' %}">Categories</a></li>
         <li><a href="{% url 'home' %}">Ratings</a></li>
         {% if request.user.is_authenticated %}
-            <li><a href="{% url 'home' %}">Favorite auctions</a></li>
+            <li><a href="{% url 'favorites' %}">Favorite auctions</a></li>
             <li><a href="{% url 'profiles' %}">User profiles</a></li>
             <li class="log-in-out">Welcome: <i>{{ request.user.username }} </i><a href="{% url 'logout' %}">Logout</a></li>
         {% endif %}

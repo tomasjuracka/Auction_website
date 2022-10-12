@@ -42,5 +42,8 @@ urlpatterns = [
     # Rating
     #path('ratings/', auction.views.ratings, name='ratings'),
     # Favorites
-    #path('favorites/', auction.views.favorites, name='favorites'),
-]
+    path('favorites/', auction.views.favorites, name='favorites'),
+    path('remove_favorites/<id_item>', auction.views.remove_favorites, name='remove_favorites'),
+    path('add_favorites/<id_item>', auction.views.add_favorites, name='add_favorites'),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

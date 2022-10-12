@@ -5,12 +5,12 @@
 {% block title %}Your favorite auctions{% endblock %}
 
 {% block content %}
-    <div class="list-of-categories">List of categories:</div>
-    <div class="categories-list">
+    <div class="list-of-favorites">List of favorites:</div>
+    <div class="favorites-list">
         <ul>
-            {% for category in categories %}
+            {% for auction in auctions %}
             <li>
-                <a href="{% url 'category' category.id %}">{{ category.name }}</a>
+                <a href="{% url 'auction' auction.id %}">{{ auction.name }}</a>
 
 
             </li>

@@ -7,7 +7,7 @@ from auction.models import Auction
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="userprofile")
     city = models.CharField(max_length=255)
-    favorites = models.ManyToManyField(Auction, null=True)
+    favorites = models.ManyToManyField(Auction, blank=True)
     address = models.CharField(max_length=255)
     signed_up = models.DateTimeField(auto_now_add=True)
     photo = models.TextField(null=True)
@@ -17,4 +17,4 @@ class Profile(models.Model):
         self.favorites.clear()
 
     def __str__(self):
-        return self.user
+        return self.user.username

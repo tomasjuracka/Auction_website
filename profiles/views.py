@@ -48,7 +48,7 @@ def create_profile(request):
             address=address,
             photo=file_url,
         )
-        profile.favorites_set()
+        profile.favorites.clear()
         return redirect('profiles')
     return render(request, 'profiles/create_profile.html')
 
@@ -77,7 +77,6 @@ def edit_profile(request):
         user.userprofile.address = address
         user.userprofile.photo = file_url
         user.userprofile.save()
-        profile = user.userprofile
 
         return redirect('profiles')
     user = User.objects.get(id=request.user.id)
