@@ -11,8 +11,6 @@
             {% for auction in auctions %}
             <li>
                 <a href="{% url 'auction' auction.id %}">{{ auction.name }}</a>
-
-
             </li>
             {% endfor %}
         </ul>

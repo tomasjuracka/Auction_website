@@ -12,7 +12,7 @@
         <ul>
         {% for auction in auctions %}
             <li>
-                {{ auction }}
+                <a href="{% url 'auction' auction.id %}">{{ auction.name }}</a>
             </li>
         {% endfor %}
 

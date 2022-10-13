@@ -5,7 +5,8 @@
 {% block content %}
     <div class="auction-content">
         You are in auction: <b>{{ auction.name }}</b> <br>
-        Description: {{ auction.description }}
+        Description: {{ auction.description }}<br>
+        Seller: {{ profile.user.first_name }} {{ profile.user.last_name }} {{ profile.city }}
     </div>
 
     {% if auction in profile.favorites.all %}

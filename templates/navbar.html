@@ -4,8 +4,10 @@
         <li><a href="{% url 'home' %}">Home</a></li>
         <li><a href="{% url 'auctions' %}">Explore auctions</a></li>
         <li><a href="{% url 'categories' %}">Categories</a></li>
-        <li><a href="{% url 'home' %}">Ratings</a></li>
         {% if request.user.is_authenticated %}
+            <li><a href="{% url 'create_category' %}">Create category</a></li>
+            <li><a href="{% url 'create_auction' %}">Create auction</a></li>
+            <li><a href="{% url 'home' %}">My bids</a></li>
             <li><a href="{% url 'favorites' %}">Favorite auctions</a></li>
             <li><a href="{% url 'profiles' %}">User profiles</a></li>
             <li class="log-in-out">Welcome: <i>{{ request.user.username }} </i><a href="{% url 'logout' %}">Logout</a></li>

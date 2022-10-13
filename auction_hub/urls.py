@@ -29,9 +29,11 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
 
     # Category
+    path('create_category/', auction.views.create_category, name="create_category"),
     path('category/<str:pk>/', auction.views.category, name="category"),
     path('categories/', auction.views.categories, name='categories'),
     # Auction
+    path('create_auction/', auction.views.create_auction, name='create_auction'),
     path('auction/<str:pk>/', auction.views.auction, name='auction'),
     path('auctions/', auction.views.auctions, name='auctions'),
     # Profile
