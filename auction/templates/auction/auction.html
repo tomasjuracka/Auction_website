@@ -5,12 +5,76 @@
 {% block content %}
     <div class="auction-content">
         You are in auction: <b>{{ auction.name }}</b> <br>
+
+        <div class="image-auction"> Image:
+    <div class="image-auction-file">
+        <a href="{{ auction.photo }}"><img src="{{ auction.photo }}" width="400px"></a>
+    </div>
+        </div>
+        <b>Details:</b><br>
+        Seller: {{ profile.user.first_name }} {{ profile.user.last_name }}<br>
+        City: {{ profile.city }}<br>
         Description: {{ auction.description }}<br>
-        Seller: {{ profile.user.first_name }} {{ profile.user.last_name }} {{ profile.city }}
     </div>
 
     {% if auction in profile.favorites.all %}
-    <a href="/remove_favorites/{{ auction.id }}">Remove from favorites.</a>
-    {% else %} <a href="/add_favorites/{{ auction.id }}">Add to favorites.</a>
+    <a href="/remove_favorites/{{ auction.id }}">Remove from favorites. &#9733;</a>
+    {% else %} <a href="/add_favorites/{{ auction.id }}">Add to favorites. &#9734;</a>
     {% endif %}
+<div class="buy-now">
+    Buy now: <b>{{ auction.buy_now }} $</b>
+</div>
+<div class="bid">
+    Start Bid: <b>{{ auction.start_bid }} $</b>
+</div>
+    {% for bid in bids %}
+    <div class="bid-text">{{ bid.user.username }} bid <b>{{ bid.bid_amount }}</b>
+        at {{ bid.created|date:'M d, h:i a' }}</div>
+    {% empty %}
+    <div class="bid-message">
+        No bids yet!
+    </div>
+    {% endfor %}
+{% if "message" in request.session %}
+<div class="message red">
+    {{ request.session.message }}
+</div>
+{% endif %}
+    <div class="bid-form">
+        <form action="/bid/{{ auction.id }}/" method="POST">
+            {% csrf_token %}
+            <label for="bid">Bid: </label>
+            <textarea name="bid" id="bid" rows="1" cols="10"> </textarea>
+            <input type="submit" value="Bid value">
+        </form>
+    </div>
+
+    <div class="message-form">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="body">Message: </label>
+            <textarea name="body" id="body" rows="1" cols="100"> </textarea>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+
+    <div class="messages-box">
+    {% for comment in ratings %}
+        {% if rating.user == auction.seller %}
+            <div class="my-message">
+                <div class="my-message-info">
+                    <span class="message-user">{{ rating.user }}</span>
+                    <span class="message-time">{{ rating.created }}</span>
+                </div>
+            </div>
+        {% else %}
+            <div class="other-message">
+                <div class="other-message-info">
+                    <span class="message-user">{{ rating.user }}</span>
+                    <span class="message-time">{{ rating.created }}</span>
+                </div>
+
+            </div>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

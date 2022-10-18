@@ -28,6 +28,7 @@ class Auction(models.Model):
     end_date = models.DateTimeField()
     buy_now = models.DecimalField(max_digits=9, decimal_places=2)
     start_bid = models.DecimalField(max_digits=9, decimal_places=2)
+    min_bid = models.DecimalField(max_digits=9, decimal_places=2)
     active = models.BooleanField()
 
     def __str__(self):
@@ -37,16 +38,13 @@ class Auction(models.Model):
 class Bid(models.Model):
     auction = models.ForeignKey(Auction, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    created = models.DateTimeField(auto_now_add=True)
     bid_amount = models.DecimalField(max_digits=9, decimal_places=2)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class Rating(models.Model):
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
-    # buyer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    # seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    comment_buyer = models.CharField(max_length=255)
-    comment_seller = models.CharField(max_length=255)
-    rating_buyer = models.PositiveSmallIntegerField()
-    rating_seller = models.PositiveSmallIntegerField()
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    comment = models.CharField(max_length=255)
+    rating = models.PositiveSmallIntegerField()
     created = models.DateTimeField(auto_now_add=True)

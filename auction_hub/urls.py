@@ -23,11 +23,9 @@ import profiles.views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", auction.views.home, name="home"),
-
     # Accounts
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
-
     # Category
     path('create_category/', auction.views.create_category, name="create_category"),
     path('category/<str:pk>/', auction.views.category, name="category"),
@@ -36,9 +34,12 @@ urlpatterns = [
     path('create_auction/', auction.views.create_auction, name='create_auction'),
     path('auction/<str:pk>/', auction.views.auction, name='auction'),
     path('auctions/', auction.views.auctions, name='auctions'),
+    path('own_auctions/', auction.views.own_auctions, name='own_auctions'),
+    # Bid
+    path('bid/<pk>/', auction.views.bid, name='bid'),
     # Profile
     path('createprofile/', profiles.views.create_profile, name='create_profile'),
-    path('user/<pk>', profiles.views.user_profile, name='profile'),
+    path('user/<pk>/', profiles.views.user_profile, name='profile'),
     path('edituser/', profiles.views.edit_profile, name='edit_profile'),
     path('users/', profiles.views.profiles_list, name='profiles'),
     # Rating

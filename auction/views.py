@@ -1,10 +1,14 @@
 from datetime import datetime
+from django.urls import reverse
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.db.models import Max
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
-from auction.models import Category, Auction, Rating
+from auction.models import Category, Auction, Rating, Bid
 
 from profiles.models import Profile
 
@@ -13,7 +17,6 @@ from profiles.models import Profile
 
 
 def home(request):
-
     return render(request, 'auction/home.html')
 
 
@@ -50,20 +53,66 @@ def create_category(request):
 
 def auction(request, pk):
     auction = Auction.objects.get(id=pk)
-    profile = Profile.objects.get(id=request.user.id)
+    profile = Profile.objects.get(user=request.user)
+    bids = Bid.objects.filter(auction=auction)
+    try:
+        amount = bids.aggregate(Max('bid_amount'))['bid_amount__max']
+    except ValueError:
+        amount = 0
     if auction.start_date < timezone.now() < auction.end_date:
         auction.active = True
+        auction.save()
     else:
         auction.active = False
-
-    context = {'auction': auction, "profile": profile}
+        auction.save()
+    try:
+        if auction.buy_now <= amount:
+            auction.active = False
+            auction.save()
+    except TypeError:
+        pass
+    context = {'auction': auction, "profile": profile, "bids": bids}
     return render(request, "auction/auction.html", context)
 
 
 def auctions(request):
     auctions = Auction.objects.all()
+    message = ''
+    request.session["message"] = message
 
-    context = {'auctions': auctions}
+    filter = "all"
+    if request.method == "POST":
+        explore = request.POST.get("explore")
+        if explore == "own":
+            auctions = Auction.objects.filter(seller=request.user)
+            filter = "My auctions"
+
+        elif explore == "did_bid":  # ToDo check function
+            bids = Bid.objects.filter(user=request.user).distinct()
+            auctions = []
+            for bid in bids:
+                if bid.auction not in auctions:
+                    auctions.append(bid.auction)
+            filter = "Auctions I bid"
+
+        elif explore == "recent":  # ToDo check slicing direction and perform reversed if needed
+            auctions = Auction.objects.order_by("created")[:10]
+            filter = "Recently added"
+
+        elif explore == "ending":  # ToDo check slicing direction and perform reversed if needed
+            auctions = Auction.objects.order_by("end_date")[:10]
+            filter = "Soon ending"
+
+        elif explore == "observed":
+            profile = Profile.objects.get(id=request.user.id)
+            auctions = profile.favorites.all()
+            filter = "Observed auctions"
+
+        elif explore == "ended":
+            auctions = Auction.objects.filter(active=False)
+            filter = "Just ended"
+
+    context = {'auctions': auctions, "filter": filter}
     return render(request, "auction/auctions.html", context)
 
 
@@ -75,6 +124,7 @@ def create_auction(request):
         descr = request.POST.get('descr').strip()
         buy_now = request.POST.get('buy_now').strip()
         start_bid = request.POST.get('start_bid').strip()
+        min_bid = request.POST.get('min_bid').strip()
         start_date = request.POST.get('start_date').strip()
         end_date = request.POST.get('end_date').strip()
         file_url = ""
@@ -84,7 +134,6 @@ def create_auction(request):
             file = file_storage.save(upload.name, upload)
             file_url = file_storage.url(file)
 
-
         if len(name) > 0 and len(descr) > 0 and len(start_bid) > 0:
             auction = Auction.objects.create(
                 seller=request.user,
@@ -93,14 +142,16 @@ def create_auction(request):
                 category=category,
                 buy_now=buy_now,
                 start_bid=start_bid,
+                min_bid=min_bid,
                 start_date=start_date,
                 end_date=end_date,
-                active=False
+                active=False,
+                photo=file_url
             )
             auction.save()
 
             return redirect('auction', pk=auction.id)
-    categories=Category.objects.all()
+    categories = Category.objects.all()
     context = {'categories': categories}
     return render(request, 'auction/create_auction.html', context)
 
@@ -110,6 +161,76 @@ def ratings(request):
 
     context = {'ratings': ratings}
     return render(request, "auction/ratings.html", context)
+
+
+@login_required
+def rating(request, pk):
+    if request.method == 'POST':
+        auction = Auction.objects.get(id=pk)
+        stars = request.POST["stars"]
+        comment = request.POST["comment"].strip()
+        if comment != "":
+            rating = Rating.objects.create(
+                auction=auction,
+                user=request.user,
+                stars=stars,
+                comment=comment,
+            )
+            rating.save()
+        return HttpResponseRedirect(reverse("auction", kwargs={'id': pk}))
+    return HttpResponseRedirect(reverse("home"))
+
+
+@login_required
+def bid(request, pk):
+    message = ''
+    request.session["message"] = message
+    if request.method == 'POST':
+        auction = Auction.objects.get(id=pk)
+        bid_amount = request.POST["bid"]
+        try:
+            bid_amount = float(bid_amount)
+        except ValueError:
+            bid_amount = 0
+
+        args = Bid.objects.filter(auction=auction)
+        amount = args.aggregate(Max('bid_amount'))['bid_amount__max']
+        if amount is None:
+            amount = 0
+        if float(bid_amount) < auction.start_bid or float(bid_amount) <= amount:
+            # messages.warning(request, f'Your bid must be higher than: {max(amount, auction.start_bid)}!')
+            message = f'Your bid must be higher than: {max(amount, auction.start_bid)}!'
+            request.session["message"] = message
+            return redirect("auction", pk=auction.id)
+
+        bid = Bid.objects.create(
+            auction=auction,
+            user=request.user,
+            bid_amount=bid_amount,
+        )
+        bid.save()
+    return redirect("auction", pk=auction.id)
+
+
+@login_required
+def own_auctions(request):
+    # profile = Profile.objects.get(user=request.user)
+    own_auctions = Auction.objects.filter(seller=request.user)
+    """
+    favorites aka Observed
+    
+    did_bid = own_auction = bid.user
+    recent = Auction.objects.filter(start_date=## descending max 10)
+    ending = Auction.objects.filter(end_date=## descending max 10)
+    observed = ##
+    ended = Auction.objects.filter(active=False)
+    
+, 'did_bid': did_bid, 'recent': recent, 'ending': ending,
+               'observed': observed, 'ended': ended
+    
+"""
+    context = {'auctions': own_auctions}
+    return render(request, "auction/own_auctions.html", context)
 
 
 @login_required

@@ -3,7 +3,7 @@
 {% block title %}Create new auction{% endblock %}
 
 {% block content %}
-  <form method="POST" action="">
+  <form method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
     <label for="name">Name:</label>
     <input type="text" name="name" id="name"> <br>
@@ -28,10 +28,14 @@
     <label for="start_bid">Start bid:</label>
     <input type="number" name="start_bid" id="start_bid"> <br>
 
+    <label for="min_bid">Minimum bid:</label>
+    <input type="number" name="min_bid" id="min_bid"> <br>
+
+<!-- ToDo correct datePicker -->
     <label for="start_date">Auction starts:</label>
     <input type="datetime-local" id="start_date"
        name="start_date" value="2022-10-01T08:30"
-       min="2022-10-01T08:30" max="2050-10-01T08:30"> <br>
+       min="datetime-local" max="2050-10-01T08:30"> <br>
 
     <label for="end_date">Auction ends:</label>
     <input type="datetime-local" id="end_date"
@@ -41,4 +45,6 @@
 
     <button type="submit">Place auction</button>
   </form>
+<!-- .toISOString().split('T')[0] -->
+
 {% endblock %}

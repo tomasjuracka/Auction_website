@@ -5,7 +5,27 @@
 {% block title %}Ongoing auctions{% endblock %}
 
 {% block content %}
-    <div class="list-of-categories">List of all ongoing auctions:</div>
+
+<p>Filter options: </p>
+
+<form method="POST" action="/auctions/">
+    {% csrf_token %}
+  <label for="explore">Choose an option:</label>
+  <select name="explore" id="explore">
+      <option value="all">All</option>
+      <option value="own">My auctions</option>
+      <option value="did_bid">Auctions I bid</option>
+      <option value="recent">Recently added</option>
+      <option value="ending">Soon ending</option>
+      <option value="observed">Observed auctions</option>
+      <option value="ended">Just ended</option>
+  </select>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+<br>
+
+    <div class="list-of-categories">List of ongoing auctions based on filter: {{ filter }}</div>
     <div class="categories-list">
         <ul>
             {% for auction in auctions %}

@@ -19,7 +19,7 @@ a:hover {
 }
 
 body {
-    background: #d1e9f8;
+    background: #34e88c;
 }
 
 header {
@@ -41,4 +41,9 @@ nav li {
     */
     border: none;
     padding: 10px;
+}
+
+/* Colors */
+red {
+    color: red;
 }
