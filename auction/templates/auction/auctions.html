@@ -5,7 +5,7 @@
 {% block title %}Ongoing auctions{% endblock %}
 
 {% block content %}
-
+<div class="bidding-pic">
 <p>Filter options: </p>
 
 <form method="POST" action="/auctions/">
@@ -17,7 +17,7 @@
       <option value="did_bid">Auctions I bid</option>
       <option value="recent">Recently added</option>
       <option value="ending">Soon ending</option>
-      <option value="observed">Observed auctions</option>
+      <option value="favorite">Favorite auctions</option>
       <option value="ended">Just ended</option>
   </select>
   <br><br>
@@ -35,4 +35,5 @@
             {% endfor %}
         </ul>
     </div>
+</div>
 {% endblock %}

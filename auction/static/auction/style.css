@@ -19,31 +19,31 @@ a:hover {
 }
 
 body {
-    background: #34e88c;
+    background-image: url(/media/ux/bg.jpg);
 }
 
 header {
     font-size: 40px;
 }
 
-nav ul {
-    list-style: none;
-
+.home-img {
+    margin-left: -25px;
 }
-
 nav li {
     display: inline-block;
     font-weight: bold;
-    margin: -3px;
+    font-size: 20px;
+    vertical-align: middle;
+    line-height: 0px;
     /*
     margin-right: 10px;
-    margin-left: 10px;
+    margin-left: 1px;
     */
     border: none;
     padding: 10px;
 }
 
 /* Colors */
-red {
+.red {
     color: red;
 }

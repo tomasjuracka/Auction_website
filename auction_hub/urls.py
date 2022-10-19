@@ -34,7 +34,7 @@ urlpatterns = [
     path('create_auction/', auction.views.create_auction, name='create_auction'),
     path('auction/<str:pk>/', auction.views.auction, name='auction'),
     path('auctions/', auction.views.auctions, name='auctions'),
-    path('own_auctions/', auction.views.own_auctions, name='own_auctions'),
+    # path('own_auctions/', auction.views.own_auctions, name='own_auctions'),
     # Bid
     path('bid/<pk>/', auction.views.bid, name='bid'),
     # Profile
@@ -43,9 +43,9 @@ urlpatterns = [
     path('edituser/', profiles.views.edit_profile, name='edit_profile'),
     path('users/', profiles.views.profiles_list, name='profiles'),
     # Rating
-    #path('ratings/', auction.views.ratings, name='ratings'),
+    # path('ratings/', auction.views.ratings, name='ratings'),
     # Favorites
-    path('favorites/', auction.views.favorites, name='favorites'),
+    # path('favorites/', auction.views.favorites, name='favorites'),
     path('remove_favorites/<id_item>', auction.views.remove_favorites, name='remove_favorites'),
     path('add_favorites/<id_item>', auction.views.add_favorites, name='add_favorites'),
 

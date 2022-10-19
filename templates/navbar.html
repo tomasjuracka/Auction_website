@@ -1,16 +1,16 @@
 {% load static %}
 <nav>
     <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'auctions' %}">Explore auctions</a></li>
-        <li><a href="{% url 'categories' %}">Categories</a></li>
+        <li class="home-img"><a href="{% url 'home' %}">
+            <img src="{% static 'auction/auction.png' %}" width="100px"></a></li>
         {% if request.user.is_authenticated %}
+            <li><a href="{% url 'auctions' %}">Explore auctions</a></li>
+            <li><a href="{% url 'categories' %}">Categories</a></li>
             <li><a href="{% url 'create_category' %}">Create category</a></li>
             <li><a href="{% url 'create_auction' %}">Create auction</a></li>
-            <li><a href="{% url 'home' %}">My bids</a></li>
-            <li><a href="{% url 'favorites' %}">Favorite auctions</a></li>
             <li><a href="{% url 'profiles' %}">User profiles</a></li>
-            <li class="log-in-out">Welcome: <i>{{ request.user.username }} </i><a href="{% url 'logout' %}">Logout</a></li>
+            <li class="log-in-out">Welcome: &#128100; <i>{{ request.user.username }} | </i>
+                <a href="{% url 'logout' %}">Logout</a></li>
         {% endif %}
         {% if not request.user.is_authenticated %}
             <li class="last-item"><a href="{% url 'login' %}">Login/Signup</a></li>

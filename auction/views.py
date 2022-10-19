@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from auction.models import Category, Auction, Rating, Bid
-
+import pytz
 from profiles.models import Profile
 
 
@@ -55,8 +55,19 @@ def auction(request, pk):
     auction = Auction.objects.get(id=pk)
     profile = Profile.objects.get(user=request.user)
     bids = Bid.objects.filter(auction=auction)
+    amount = 0
+    bid = None
+    active = True
+    ended = False
+    utc = pytz.UTC
+    if utc.localize(datetime.today()) < auction.start_date:
+        active = False
+    if utc.localize(datetime.today()) > auction.end_date:
+        ended = True
     try:
-        amount = bids.aggregate(Max('bid_amount'))['bid_amount__max']
+        if bids:
+            amount = bids.aggregate(Max('bid_amount'))['bid_amount__max']
+            bid = Bid.objects.get(auction=auction, bid_amount=amount)
     except ValueError:
         amount = 0
     if auction.start_date < timezone.now() < auction.end_date:
@@ -71,12 +82,13 @@ def auction(request, pk):
             auction.save()
     except TypeError:
         pass
-    context = {'auction': auction, "profile": profile, "bids": bids}
+    context = {'auction': auction, "profile": profile, "bids": bids, "max_bid": bid, "active": active, "ended": ended}
     return render(request, "auction/auction.html", context)
 
 
 def auctions(request):
     auctions = Auction.objects.all()
+
     message = ''
     request.session["message"] = message
 
@@ -87,7 +99,7 @@ def auctions(request):
             auctions = Auction.objects.filter(seller=request.user)
             filter = "My auctions"
 
-        elif explore == "did_bid":  # ToDo check function
+        elif explore == "did_bid":
             bids = Bid.objects.filter(user=request.user).distinct()
             auctions = []
             for bid in bids:
@@ -95,27 +107,28 @@ def auctions(request):
                     auctions.append(bid.auction)
             filter = "Auctions I bid"
 
-        elif explore == "recent":  # ToDo check slicing direction and perform reversed if needed
+        elif explore == "recent":
             auctions = Auction.objects.order_by("created")[:10]
             filter = "Recently added"
 
-        elif explore == "ending":  # ToDo check slicing direction and perform reversed if needed
+        elif explore == "ending":
             auctions = Auction.objects.order_by("end_date")[:10]
             filter = "Soon ending"
 
-        elif explore == "observed":
+        elif explore == "favorite":
             profile = Profile.objects.get(id=request.user.id)
             auctions = profile.favorites.all()
-            filter = "Observed auctions"
+            filter = "Favorite auctions"
 
         elif explore == "ended":
-            auctions = Auction.objects.filter(active=False)
+            auctions = Auction.objects.filter(end_date__lt=datetime.today())
             filter = "Just ended"
 
     context = {'auctions': auctions, "filter": filter}
     return render(request, "auction/auctions.html", context)
 
 
+@login_required
 def create_auction(request):
     if request.method == 'POST':
         name = request.POST.get('name').strip()
@@ -212,11 +225,12 @@ def bid(request, pk):
     return redirect("auction", pk=auction.id)
 
 
+"""
 @login_required
 def own_auctions(request):
     # profile = Profile.objects.get(user=request.user)
     own_auctions = Auction.objects.filter(seller=request.user)
-    """
+    
     favorites aka Observed
     
     did_bid = own_auction = bid.user
@@ -228,7 +242,7 @@ def own_auctions(request):
 , 'did_bid': did_bid, 'recent': recent, 'ending': ending,
                'observed': observed, 'ended': ended
     
-"""
+
     context = {'auctions': own_auctions}
     return render(request, "auction/own_auctions.html", context)
 
@@ -240,6 +254,7 @@ def favorites(request):
 
     context = {'auctions': favorites}
     return render(request, "auction/favorites.html", context)
+"""
 
 
 @login_required
