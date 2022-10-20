@@ -23,6 +23,7 @@ import profiles.views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", auction.views.home, name="home"),
+    path('notice/', auction.views.notice, name='notice'),
     # Accounts
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),

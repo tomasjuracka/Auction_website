@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block title %}Auction - notice{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+<div class="notice">Hello <i>{{ request.user.username }}</i>,<br>
+        please bear in mind to fully utilize this website you have to have created a profile.<br>
+            You can do so in <a href="{% url 'profiles' %}"><b>profile section</b></a>
+            or right away by clicking <a href="{% url 'create_profile' %}"><b>here</b></a>.</div>
+    {% endif %}
+    <br>
+    <div class="notice-footer">We wish you wonderful auctioneering!</div>
+{% endblock %}

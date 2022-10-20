@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="bidding-pic">
-<p>Filter options: </p>
+<div class="section-heading">Filter auctions: </div><br>
 
 <form method="POST" action="/auctions/">
     {% csrf_token %}
@@ -26,11 +26,18 @@
 <br>
 
     <div class="list-of-categories">List of ongoing auctions based on filter: {{ filter }}</div>
-    <div class="categories-list">
+    <div class="auctions-list">
         <ul>
             {% for auction in auctions %}
             <li>
-                <a href="{% url 'auction' auction.id %}">{{ auction.name }}</a>
+                <a href="{% url 'auction' auction.id %}">
+                    {% if auction.photo %}
+                    <img src="{{ auction.photo }}" width="50px">
+                    {% else %}
+                    <img src='/media/ux/no_image.png' width="50px">
+                    {% endif %}
+                    {{ auction.name }}</a>
+                {{ auction.start_date }} {{ auction.end_date }}
             </li>
             {% endfor %}
         </ul>

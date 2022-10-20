@@ -8,7 +8,11 @@
 
         <div class="image-auction"> Image:
     <div class="image-auction-file">
+        {% if auction.photo %}
         <a href="{{ auction.photo }}"><img src="{{ auction.photo }}" width="250px"></a>
+        {% else %}
+        <img src='/media/ux/no_image.png' width="250px">
+        {% endif %}
     </div>
         </div>
 
@@ -41,10 +45,10 @@
     </div>
     {% endfor %}
 
-{% if active %}
+{% if not ended %}
 {% if "message" in request.session %}
 <div class="message red">
-    {{ request.session.message }}
+    <b>{{ request.session.message }}</b>
 </div>
 {% endif %}
     <div class="bid-form">
@@ -68,8 +72,11 @@
 
 {% if ended %}
 Auction has ended!<br>
+{% if not max_bid.user %}
+Nobody has won this auction.
+{% else %}
 User: {{ max_bid.user }} has won the auction.
-
+{% endif %}
 {% endif %}
 
 {% endblock %}

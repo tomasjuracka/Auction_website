@@ -3,6 +3,7 @@
 {% block title %}Create new category{% endblock %}
 
 {% block content %}
+<div class="section-heading">Category creation:</div><br>
   <form method="POST" action="">
     {% csrf_token %}
     <label for="name">Name:</label>

@@ -32,7 +32,7 @@ header {
 nav li {
     display: inline-block;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 22px;
     vertical-align: middle;
     line-height: 0px;
     /*
@@ -41,6 +41,23 @@ nav li {
     */
     border: none;
     padding: 10px;
+}
+
+.auctions-list {
+
+}
+
+.section-heading {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.notice {
+    text-align: center;
+}
+
+.notice-footer {
+    text-align: center;
 }
 
 /* Colors */

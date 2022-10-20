@@ -20,6 +20,10 @@ def home(request):
     return render(request, 'auction/home.html')
 
 
+def notice(request):
+    return render(request, 'auction/notice.html')
+
+
 def category(request, pk):
     category = Category.objects.get(id=pk)
     auctions = Auction.objects.filter(category=pk)
@@ -37,6 +41,10 @@ def categories(request):
 
 @login_required
 def create_category(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        return render(request, 'auction/notice.html')
     if request.method == 'POST':
         name = request.POST.get('name').strip()
         descr = request.POST.get('descr').strip()
@@ -51,9 +59,13 @@ def create_category(request):
     return render(request, 'auction/create_category.html')
 
 
+@login_required
 def auction(request, pk):
     auction = Auction.objects.get(id=pk)
-    profile = Profile.objects.get(user=request.user)
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        return render(request, 'auction/notice.html')
     bids = Bid.objects.filter(auction=auction)
     amount = 0
     bid = None
@@ -68,9 +80,10 @@ def auction(request, pk):
         if bids:
             amount = bids.aggregate(Max('bid_amount'))['bid_amount__max']
             bid = Bid.objects.get(auction=auction, bid_amount=amount)
+
     except ValueError:
         amount = 0
-    if auction.start_date < timezone.now() < auction.end_date:
+    if auction.start_date < utc.localize(datetime.today()) < auction.end_date:
         auction.active = True
         auction.save()
     else:
@@ -116,7 +129,10 @@ def auctions(request):
             filter = "Soon ending"
 
         elif explore == "favorite":
-            profile = Profile.objects.get(id=request.user.id)
+            try:
+                profile = Profile.objects.get(id=request.user.id)
+            except Profile.DoesNotExist:
+                return render(request, 'auction/notice.html')
             auctions = profile.favorites.all()
             filter = "Favorite auctions"
 
@@ -130,6 +146,10 @@ def auctions(request):
 
 @login_required
 def create_auction(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        return render(request, 'auction/notice.html')
     if request.method == 'POST':
         name = request.POST.get('name').strip()
         category_name = request.POST.get('category').strip()
