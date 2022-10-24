@@ -60,6 +60,10 @@ nav li {
     text-align: center;
 }
 
+table, th, td {
+  text-align: center;
+}
+
 /* Colors */
 .red {
     color: red;

@@ -72,9 +72,11 @@ def auction(request, pk):
     active = True
     ended = False
     utc = pytz.UTC
-    if utc.localize(datetime.today()) < auction.start_date:
+    if timezone.now() < auction.start_date:
         active = False
-    if utc.localize(datetime.today()) > auction.end_date:
+    if timezone.now() > auction.end_date:
+        active = False
+    if timezone.now() > auction.end_date:
         ended = True
     try:
         if bids:
@@ -83,18 +85,22 @@ def auction(request, pk):
 
     except ValueError:
         amount = 0
-    if auction.start_date < utc.localize(datetime.today()) < auction.end_date:
+    if auction.start_date < timezone.now() < auction.end_date:
         auction.active = True
         auction.save()
     else:
         auction.active = False
         auction.save()
+    # print(auction.buy_now <= amount)
+    # print(type(amount), type(bid))
     try:
         if auction.buy_now <= amount:
             auction.active = False
+            ended = True
             auction.save()
     except TypeError:
         pass
+    active = auction.active
     context = {'auction': auction, "profile": profile, "bids": bids, "max_bid": bid, "active": active, "ended": ended}
     return render(request, "auction/auction.html", context)
 
@@ -148,6 +154,7 @@ def auctions(request):
 def create_auction(request):
     try:
         profile = Profile.objects.get(user=request.user)
+
     except Profile.DoesNotExist:
         return render(request, 'auction/notice.html')
     if request.method == 'POST':

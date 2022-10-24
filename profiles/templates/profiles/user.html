@@ -6,7 +6,11 @@
 
 <div class="photo"> Profile picture: <!-- {{ profile.photo }} -->
     <div class="my-profile-file">
+        {% if profile.photo %}
         <a href="{{ profile.photo }}"><img src="{{ profile.photo }}" width="150px"></a>
+        {% else %}
+        <img src='/media/ux/no_image.png' width="150px">
+        {% endif %}
     </div>
 </div>
 <div class="user-profile"> Username: {{ profile.user.username }}</div>

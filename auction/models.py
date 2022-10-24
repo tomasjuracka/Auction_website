@@ -18,7 +18,7 @@ class Category(models.Model):
 
 
 class Auction(models.Model):
-    seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    seller = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="auction_seller")
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(max_length=2047)

@@ -23,9 +23,11 @@
     <br><br>
 
         <b>Details:</b><br>
-        Seller: {{ profile.user.first_name }} {{ profile.user.last_name }}<br>
+        Seller: {{ auction.seller.first_name }} {{ auction.seller.last_name }}<br>
         City: {{ profile.city }}<br>
+        <div class="description">
         Description: {{ auction.description }}<br>
+        </div>
         Auction runs from: {{ auction.start_date }} until: {{ auction.end_date }}<br>
     </div>
 
@@ -45,7 +47,9 @@
     </div>
     {% endfor %}
 
-{% if not ended %}
+
+{% if active %}
+Auction is open.
 {% if "message" in request.session %}
 <div class="message red">
     <b>{{ request.session.message }}</b>
@@ -59,7 +63,10 @@
             <input type="submit" value="Bid value">
         </form>
     </div>
+{% else %}
 
+Auction is closed.<br>
+<!--
     <div class="message-form">
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -68,11 +75,12 @@
             <input type="submit" value="Send">
         </form>
     </div>
+-->
 {% endif %}
 
 {% if ended %}
 Auction has ended!<br>
-{% if not max_bid.user %}
+{% if not max_bid.user or max_bid.bid_amount < auction.min_bid %}
 Nobody has won this auction.
 {% else %}
 User: {{ max_bid.user }} has won the auction.

@@ -25,22 +25,29 @@
 </form>
 <br>
 
-    <div class="list-of-categories">List of ongoing auctions based on filter: {{ filter }}</div>
+    <div class="list-of-categories">List of auctions based on filter: {{ filter }}</div><br>
     <div class="auctions-list">
-        <ul>
+    <table style="width:50%">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Starting date</th>
+            <th>Ending date</th>
+        </tr>
+        <tr>
             {% for auction in auctions %}
-            <li>
-                <a href="{% url 'auction' auction.id %}">
+            <td><a href="{% url 'auction' auction.id %}">
                     {% if auction.photo %}
                     <img src="{{ auction.photo }}" width="50px">
                     {% else %}
-                    <img src='/media/ux/no_image.png' width="50px">
+                    <img src='/media/ux/no_image.png' width="50px"></a></td>
                     {% endif %}
-                    {{ auction.name }}</a>
-                {{ auction.start_date }} {{ auction.end_date }}
-            </li>
+            <td><a href="{% url 'auction' auction.id %}">{{ auction.name }}</a></td>
+            <td><a href="{% url 'auction' auction.id %}">{{ auction.start_date }}</a></td>
+            <td><a href="{% url 'auction' auction.id %}">{{ auction.end_date }}</a></td>
+        </tr>
             {% endfor %}
-        </ul>
+    </table>
     </div>
-</div>
+    </div>
 {% endblock %}
